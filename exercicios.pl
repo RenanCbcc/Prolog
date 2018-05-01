@@ -95,6 +95,30 @@ pode_ser_modelo(X):- mulher(X),pessoa(X,_,I,A,P), A > 1.70, I < 25,P < 62.1 * P 
 
 %seção 3.4
 
+joga(ana,volei).
+joga(bia,tenis).
+joga(ivo,basquete).
+joga(eva,volei).
+joga(leo,tenis).
+
+num(N,positivo) :- N>0,!.
+num(N,negativo) :- N<0,!.
+num(0,nulo).
+
+animal(cão).
+animal(canário).
+animal(cobra).
+animal(morcego).
+animal(gaivota).
+voa(canário).
+voa(morcego).
+voa(gaivota).
+dif(X,X) :- !, fail.
+dif(_,_).
+pássaro(X) :- animal(X), voa(X), dif(X,morcego).
+
+
+
 %seção 4.4
 
 %seção 5.3
