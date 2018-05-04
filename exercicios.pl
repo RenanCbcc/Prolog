@@ -118,9 +118,49 @@ dif(_,_).
 pássaro(X) :- animal(X), voa(X), dif(X,morcego).
 
 
-
 %seção 4.4
+
+%mul(NUMERO,MULTIPLICADOR,RESULTADO)
+mul(N,M,R) :- 
+	M>0, 
+	AUX is M-1, 
+	mul(N,AUX,A),
+	 R is (N+A).
+
+mul(N,1,R) :- R is N.
+mul(_,0,0).
+
+
+to_bin(0,'0').
+to_bin(1,'1').
+to_bin(N,B):- 
+	N>1, 
+	X is N mod 2, 
+	Y is N//2, 
+	to_bin(Y,B1), 
+	atom_concat(B1, X, B).
+
+mapa(a,b,25).
+mapa(a,d,23).
+mapa(b,c,19).
+mapa(b,e,25).
+mapa(c,d,14).
+mapa(c,f,28).
+mapa(d,f,30).
+mapa(e,f,26).
+
+
+%estrada(ORIGEM,DESTINO,KM)
+
+estrada(X,Y,D):- mapa(X,Y,D).
+estrada(X,Y,D):- 
+	mapa(X,Z,D1), 
+	estrada(Z,Y,DN),
+	D is (D1+DN).
+
 
 %seção 5.3
 
+ultimo(X,[X]).
+ultimo(X,[_|T]) :- ultimo(X,T).
 %seção 6.5
