@@ -121,6 +121,7 @@ pássaro(X) :- animal(X), voa(X), dif(X,morcego).
 %seção 4.4
 
 %mul(NUMERO,MULTIPLICADOR,RESULTADO)
+%4.1.
 mul(N,M,R) :- 
 	M>0, 
 	AUX is M-1, 
@@ -130,7 +131,7 @@ mul(N,M,R) :-
 mul(N,1,R) :- R is N.
 mul(_,0,0).
 
-
+%4.2.
 to_bin(0,'0').
 to_bin(1,'1').
 to_bin(N,B):- 
@@ -149,18 +150,162 @@ mapa(c,f,28).
 mapa(d,f,30).
 mapa(e,f,26).
 
-
 %estrada(ORIGEM,DESTINO,KM)
 
-estrada(X,Y,D):- mapa(X,Y,D).
-estrada(X,Y,D):- 
+strada(X,Y,D):- mapa(X,Y,D).
+strada(X,Y,D):- 
 	mapa(X,Z,D1), 
-	estrada(Z,Y,DN),
+	strada(Z,Y,DN),
 	D is (D1+DN).
-
 
 %seção 5.3
 
 ultimo(X,[X]).
 ultimo(X,[_|T]) :- ultimo(X,T).
+
+
+tam([],0).
+tam([_|T],N) :-	 
+	tam(T,R),
+	N is (1+R).  
+
+%5.3.
+soma([],0).
+soma([H|T],S) :-	 
+	soma(T,R),
+	S is (H+R).  
+
+%5.4.
+max([H],H).
+
+max([X,Y|T],M):-
+	X>Y,
+	max([X|T],M).
+
+max([X,Y|T],M):-
+      X=<Y,
+      max([Y|T],M).
+
+%5.5.
+inv([],[]).
+inv([H|T],I):- 
+	inv(T,L),
+	append(L,[H],I).
+	
+%5.6.
+is_symmetric([H|T]):- inv([H|T],I), sim([H|T],I).
+sim([],[]).
+sim([X|Tx],[X|Ty]):- sim(Tx,Ty). 
+
+%5.7.
+
+d(0,zero).
+d(1,um).
+d(2,dois).
+d(3,tres).
+d(4,quatro).
+d(5,cinco).
+d(6,seis).
+d(7,sete).
+d(8,oito).
+d(9,nove).
+
+txt([],[]).
+txt([H|T],L):- txt(T,R),d(H,P),append(R,[P],L).
+
+
+%5.8.
+estrada(1,a,b).
+estrada(2,a,d).
+estrada(3,b,c).
+estrada(4,c,d).
+estrada(5,b,e).
+estrada(6,c,f).
+estrada(7,d,f).
+estrada(8,e,f).
+
+rota(X,Y,D):- estrada(D,X,Y).
+rota(X,Y,L):- 
+	estrada(D,X,Z), 
+	rota(Z,Y,DN),
+	append([D],[DN],L).
+
+%5.9.
+retangulo(ponto(1,2),ponto(1,5),ponto(7,2),ponto(7,5)).
+
 %seção 6.5
+
+%6.2.
+
+:- dynamic(lampada/1).
+
+lampada(acesa).
+
+desligar:-
+	retract(lampada(acesa)),
+	asserta(lampada(apagada)).
+ligar:-
+	retract(lampada(apagada)),
+	asserta(lampada(acesa)).
+	
+
+%6.3.
+:- dynamic(dig/2).
+
+dig(zero).
+dig(um).
+dig(dois).
+dig(tres).
+dig(quatro).
+
+memorize(Digito):-
+	dig(Digito),true,!,fail.
+
+memorize(Digito):-
+	asserta(dig(Digito)).
+
+%6.4.
+:- dynamic(pos/2).
+%pos(robô,garagem).
+pos(robô,cozinha).
+%pos(tv,sala).
+pos(tv,quarto).
+
+leve(Obj,Local):-
+	pegue(Obj),
+	ande(Local),
+	solte(Obj).
+
+pegue(Obj):-
+	format(' [🤖]@Onde está ~w? ',[Obj]),
+	read(Local),	
+	assertz( pos(Obj,Local)),
+	ande(Local),
+	put(10),	
+	format(' [🤖]@Pega a ~w.',[Obj]),
+	retract( pos(robô,_) ),
+	assertz( pos(robô,Local)).
+
+pegue(Obj):-	
+	pos(Obj,Local),
+	ande(Local),
+	put(10),	
+	format(' [🤖]@Pega a ~w.',[Obj]),
+	retract( pos(robô,_) ),
+	assertz( pos(robô,Local)).
+
+ande(Dest):- 
+	pos(robô,Local),
+	put(10),	
+	format(' [🤖]@Anda da ~w até a ~w.',[Local,Dest]),
+	retract( pos(robô,_) ),
+	assertz( pos(robô,Dest)).
+
+solte(Obj):-
+	pos(robô,Local),
+	put(10),
+	format(' [🤖]@Solta a ~w.',[Obj]),
+	retract( pos(Obj,_) ),
+	assertz( pos(Obj,Local)).
+ 	
+ 
